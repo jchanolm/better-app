@@ -1,0 +1,81 @@
+/* General Styling */
+.round-details-container {
+    background-color: #000;
+    color: #fff;
+    padding: 20px;
+}
+
+.round-details-header {
+    text-align: center;
+}
+
+.round-title-container {
+    margin: 0 auto;
+    text-align: left;
+    max-width: 800px;
+}
+
+.round-title {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Competitor Rectangle Styling */
+.competitor-rectangle {
+    background-color: #000;
+    border: 2px solid #fff;
+    width: 80px;
+    height: 40px;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.competitor-rectangle.selected {
+    border-color: yellow;
+}
+
+.competitor-rectangle:hover {
+    border-color: #ffcc00;
+}
+
+/* Inactive Competitor Rectangle Styling */
+.competitor-rectangle.inactive {
+    background-color: #2a2a2a;
+    cursor: default;
+}
+
+.competitor-rectangle.inactive:hover {
+    border-color: #fff;
+}
+
+/* Gold Rectangle (Final Column) */
+.final-rectangle {
+    background-color: #2a2a2a;
+    border: 2px solid #b8860b;
+    width: 80px;
+    height: 40px;
+    margin: 5px 0;
+}
+
+/* Grid Layout for Bracket */
+.bracket-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
+    gap: 50px; /* Space between columns */
+    margin-top: 20px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensure even spacing */
+    height: 500px; /* Control the total height of each column */
+}
+
+.final-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center the final rectangle */
+    align-items: center;
+}
