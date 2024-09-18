@@ -2,7 +2,7 @@
 
 /* Feed Card */
 .feed-card {
-  background-color: #2b2a27; 
+  background-color: #000000; 
   padding: 20px;
   border-radius: 0px; /* No rounded corners */
   border: 1px solid #FFFFFF;
@@ -26,7 +26,7 @@
 
 
 .feed-card:hover {
-  background-color: #3c3a37; /* Slightly darker on hover */}
+  background-color: #121111; /* Slightly darker on hover */}
   
 /* Card Header */
 .card-header {
