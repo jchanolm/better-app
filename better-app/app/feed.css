@@ -1,0 +1,127 @@
+/* app/feed.css */
+
+/* Feed Card */
+.feed-card {
+  background-color: #2b2a27; 
+  padding: 20px;
+  border-radius: 0px; /* No rounded corners */
+  border: 1px solid #FFFFFF;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: background-color 0.01s ease-in-out;
+  text-align: left; /* Keep text left-aligned */
+}
+
+.feed-card h3 {
+  margin: 0;
+  padding: 2px 0;
+  font-weight: 590; /* Adjust the font weight to your preference (300, 400, etc.) */
+}
+
+.feed-card p {
+  margin: 0;
+  padding: 5px 0;
+}
+
+
+
+.feed-card:hover {
+  background-color: #3c3a37; /* Slightly darker on hover */}
+  
+/* Card Header */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.status-badge {
+  background-color: #F4D9B6; /* Light tan */
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* List Style */
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 10px;
+}
+
+li {
+  margin-left: 10px;
+}
+
+/* Footer */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #888;
+}
+
+
+.view-more-button {
+  border: 1px solid #000;
+  background-color: transparent;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.05;
+}
+
+.view-more-button:hover {
+  background-color: #f5f5f5;
+}
+  
+
+
+
+/* Active Pill Styles */
+.active-pill {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #F4D9B6;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: normal;
+  color: #000;
+}
+
+/* Card Content Adjustments */
+.card-content {
+  margin-top: 0;
+  padding-left: 10px; /* Add padding to move text to the right */
+}
+
+/* Button inside the feed card */
+.feed-card-button {
+  align-self: flex-end; /* Ensure button stays aligned at the bottom */
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.feed-card-button:hover {
+  background-color: #F5F5F5;
+}
+
+
+.date-container {
+  display: flex; /* Align the dates side by side */
+  gap: 15px; /* Adjust the space between the two dates */
+  justify-content: flex-start; /* Align them to the left */
+  font-size: 14px; /* Adjust font size */
+  color: #000000; /* Color of the text */
+  padding-top: 20px; /* Add padding to push the dates down */
+}
