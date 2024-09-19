@@ -1,80 +1,64 @@
 'use client';
 
-import React, { useState } from 'react';
-import '../roundDetails.css'; // Import for styling
+import React, { useState, useEffect } from 'react';
+import { Bracket, IRoundProps, Seed, SeedItem, SeedTeam, IRenderSeedProps } from 'react-brackets';
+
+const rounds: IRoundProps[] = [
+  {
+    title: 'Round 1',
+    seeds: [
+      {
+        id: 1,
+        date: new Date().toDateString(),
+        teams: [{ name: 'Team A' }, { name: 'Team B' }],
+      },
+      {
+        id: 2,
+        date: new Date().toDateString(),
+        teams: [{ name: 'Team C' }, { name: 'Team D' }],
+      },
+    ],
+  },
+  // Add more rounds as needed
+];
+
+const CustomSeed = ({seed}: IRenderSeedProps) => {
+  return (
+    <Seed mobileBreakpoint={0}>
+      <SeedItem>
+        <div>
+          <SeedTeam>{seed.teams[0]?.name || 'TBD'}</SeedTeam>
+          <SeedTeam>{seed.teams[1]?.name || 'TBD'}</SeedTeam>
+        </div>
+      </SeedItem>
+    </Seed>
+  );
+};
 
 const RoundDetails = () => {
-  const CompetitorRectangle = ({ isInactive = false, isFinal = false }: { isInactive?: boolean, isFinal?: boolean }) => {
-    const [isSelected, setIsSelected] = useState(false);
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
 
-    const handleSelect = () => {
-      setIsSelected(true);
-      setTimeout(() => setIsSelected(false), 500);
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth * 0.9);
+      setHeight(window.innerHeight * 0.8);
     };
 
-    return (
-      <div
-        className={`competitor-rectangle ${isSelected ? 'selected' : ''} ${
-          isInactive ? 'inactive' : ''
-        } ${isFinal ? 'final-rectangle' : ''}`}
-        onClick={handleSelect}
-      >
-        {/* No text inside the rectangle */}
-      </div>
-    );
-  };
+    handleResize(); // Call once to set initial size
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
-    <div className="round-details-container">
-      <header className="round-details-header">
-        <div className="round-title-container">
-          <h1 className="round-title">Round 1: Creative Writing</h1>
-
-          <div className="bracket-grid">
-            {/* First Stage */}
-            <div className="column">
-              <CompetitorRectangle />
-              <CompetitorRectangle />
-              <div className="blank-cell"></div>
-
-              <CompetitorRectangle />
-              <CompetitorRectangle />
-              <div className="blank-cell"></div>
-
-              <CompetitorRectangle />
-              <CompetitorRectangle />
-              <div className="blank-cell"></div>
-            </div>
-
-            {/* Second Stage */}
-            <div className="column">
-              <div className="blank-cell"></div>
-              <CompetitorRectangle isInactive={true} />
-              <CompetitorRectangle isInactive={true} />
-              <div className="blank-cell"></div>
-
-              <CompetitorRectangle isInactive={true} />
-              <CompetitorRectangle isInactive={true} />
-              <div className="blank-cell"></div>
-            </div>
-
-            {/* Final Stage */}
-            <div className="column">
-              <div className="blank-cell"></div>
-              <div className="blank-cell"></div>
-              <CompetitorRectangle isInactive={true} />
-              <CompetitorRectangle isInactive={true} />
-              <div className="blank-cell"></div>
-              <div className="blank-cell"></div>
-            </div>
-
-            {/* Winner Column (Final Rectangle) */}
-            <div className="final-column">
-              <CompetitorRectangle isFinal={true} />
-            </div>
-          </div>
-        </div>
-      </header>
+    <div style={{ padding: '20px', backgroundColor: '#000', color: '#fff' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Bracket Example</h1>
+      <div style={{ width: `${width}px`, height: `${height}px`, overflow: 'auto' }}>
+        <Bracket
+          rounds={rounds}
+          renderSeedComponent={CustomSeed}
+        />
+      </div>
     </div>
   );
 };
