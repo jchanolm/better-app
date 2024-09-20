@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Bracket, IRoundProps, Seed, SeedItem, SeedTeam, IRenderSeedProps } from 'react-brackets';
 import { useRouter } from 'next/navigation';
 import '../drawer.css'; // Assuming drawer.css is in the same directory
+import '../bracketStyles.css'; // Adjust path according to your project structure
 
 const CustomSeed = ({ seed, breakpoint }: IRenderSeedProps) => {
   const router = useRouter();
@@ -19,19 +20,17 @@ const CustomSeed = ({ seed, breakpoint }: IRenderSeedProps) => {
       <SeedItem
         style={{
           backgroundColor: 'black',
-          border: `1px solid ${isRoundOne ? 'white' : '#808080'}`,
-          transition: isRoundOne ? 'background-color 0.1s, border-color 0.1s' : 'none',
+          border: `0.75px solid white`,
+          transition: isRoundOne ? 'background-color 0.1s' : 'none',
         }}
         onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
           if (isRoundOne) {
             e.currentTarget.style.backgroundColor = '#1a1a1a';
-            e.currentTarget.style.borderColor = '#cccc00'; // Darker yellow
           }
         }}
         onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
           if (isRoundOne) {
             e.currentTarget.style.backgroundColor = 'black';
-            e.currentTarget.style.borderColor = 'white';
           }
         }}
       >
@@ -100,57 +99,64 @@ const BracketWithCustomSeed = () => {
   }, []);
 
   return (
-    <div className="bracket-table-container" style={{ alignItems: 'flex-start', maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '20px' }}>
+    <div className="bracket-table-container" style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      alignItems: 'center', 
+      maxWidth: '1080px', // Reduced by 10% from 1200px
+      margin: '0 auto', 
+      padding: '54px 36px', // Reduced by 10% from 60px 40px
+      fontFamily: "'Open Sans', sans-serif",
+      fontSize: '14.4px' // Reduced by 10% from 16px
+    }}>
+      <div style={{ marginBottom: '54px', width: '100%', padding: '0 4.5%' }}> {/* Reduced marginBottom by 10% from 60px */}
         <Bracket
           rounds={rounds}
           renderSeedComponent={CustomSeed}
           roundTitleComponent={(title: React.ReactNode) => (
-            <div style={{ textAlign: 'center', color: 'white', fontSize: '20px', userSelect: 'none' }}>{title}</div>
+            <div style={{ textAlign: 'center', color: 'white', userSelect: 'none', marginBottom: '27px' }}>{title}</div> // Reduced marginBottom by 10% from 30px
           )}
           swipeableProps={{ enableMouseEvents: false }}
         />
       </div>
 
-      {/* Competitors Table */}
-      <table className="competitor-table" style={{ width: '400px' }}>
-        <thead>
-          <tr>
-            <th style={{ textAlign: 'left' }}>Competitor</th>
-            <th style={{ textAlign: 'left' }}>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {competitors.map((competitor) => (
-            <tr 
-              key={competitor.name} 
-              onClick={(e) => {
-                e.preventDefault();
-                setSelectedTeam(competitor.name);
-              }}
-              style={{ 
-                transition: 'all 0.3s ease',
-                cursor: 'pointer',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#1a1a1a';
-                e.currentTarget.style.boxShadow = '0 0 0 1px #cccc00';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '';
-                e.currentTarget.style.boxShadow = '';
-              }}
-            >
-              <td style={{ padding: '8px', textAlign: 'left' }}>{competitor.name}</td>
-              <td style={{ padding: '8px', textAlign: 'left' }}>
-                <span
-                  className={`status-button ${competitor.status === 'active' ? 'status-green' : 'status-red'}`}
-                ></span>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* Competitors List */}
+      <div className="competitor-list" style={{ width: '100%', maxWidth: '495px', padding: '0 27px' }}> {/* Reduced maxWidth by 10% from 550px, padding by 10% from 0 30px */}
+        <h3 style={{ textAlign: 'left', marginBottom: '22.5px', color: 'white' }}>Competitors</h3> {/* Reduced marginBottom by 10% from 25px */}
+        {competitors.map((competitor, index) => (
+          <div 
+            key={competitor.name} 
+            onClick={() => setSelectedTeam(competitor.name)}
+            style={{ 
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '14.4px 7.2px', // Reduced by 10% from 16px 8px
+              marginBottom: '10.8px', // Reduced by 10% from 12px
+              borderBottom: index < competitors.length - 1 ? '0.675px solid white' : 'none', // Reduced by 10% from 0.75px
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#1a1a1a';
+              e.currentTarget.style.paddingLeft = '14.4px'; // Reduced by 10% from 16px
+              e.currentTarget.style.paddingRight = '14.4px'; // Reduced by 10% from 16px
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '';
+              e.currentTarget.style.paddingLeft = '7.2px'; // Reduced by 10% from 8px
+              e.currentTarget.style.paddingRight = '7.2px'; // Reduced by 10% from 8px
+            }}
+          >
+            <span style={{ color: 'white' }}>{competitor.name}</span>
+            <span style={{ 
+              color: competitor.status === 'active' ? '#4CAF50' : '#F44336',
+            }}>
+              {competitor.status === 'active' ? 'Active' : 'Eliminated'}
+            </span>
+          </div>
+        ))}
+      </div>
 
       {selectedTeam && (
         <div className="drawer drawer-open" ref={drawerRef}>
