@@ -49,7 +49,6 @@ const CustomSeed = ({ seed, breakpoint }: IRenderSeedProps) => {
 
 const rounds: IRoundProps[] = [
   {
-    title: 'Round 1',
     seeds: [
       { id: 1, date: new Date().toDateString(), teams: [{ name: 'Team A' }, { name: 'Team B' }] },
       { id: 2, date: new Date().toDateString(), teams: [{ name: 'Team C' }, { name: 'Team D' }] },
@@ -58,14 +57,12 @@ const rounds: IRoundProps[] = [
     ],
   },
   {
-    title: 'Round 2',
     seeds: [
       { id: 5, date: new Date().toDateString(), teams: [{ name: '' }, { name: '' }] },
       { id: 6, date: new Date().toDateString(), teams: [{ name: '' }, { name: '' }] },
     ],
   },
   {
-    title: 'Finals',
     seeds: [{ id: 7, date: new Date().toDateString(), teams: [{ name: '' }, { name: '' }] }],
   },
 ];
@@ -102,27 +99,37 @@ const BracketWithCustomSeed = () => {
     <div className="bracket-table-container" style={{ 
       display: 'flex', 
       flexDirection: 'column', 
-      alignItems: 'center', 
-      maxWidth: '1080px', // Reduced by 10% from 1200px
+      alignItems: 'flex-start', 
+      maxWidth: '1080px',
       margin: '0 auto', 
-      padding: '54px 36px', // Reduced by 10% from 60px 40px
+      padding: '54px 35px',
       fontFamily: "'Open Sans', sans-serif",
-      fontSize: '14.4px' // Reduced by 10% from 16px
+      fontSize: '14.4px',
+      marginLeft: '4px'  // Increased left margin by 2px
     }}>
-      <div style={{ marginBottom: '54px', width: '100%', padding: '0 4.5%' }}> {/* Reduced marginBottom by 10% from 60px */}
+      <div style={{ marginBottom: '20px', width: '100%' }}>
         <Bracket
           rounds={rounds}
           renderSeedComponent={CustomSeed}
           roundTitleComponent={(title: React.ReactNode) => (
-            <div style={{ textAlign: 'center', color: 'white', userSelect: 'none', marginBottom: '27px' }}>{title}</div> // Reduced marginBottom by 10% from 30px
+            <div style={{ textAlign: 'center', color: 'white', userSelect: 'none', marginBottom: '27px' }}>{title}</div>
           )}
           swipeableProps={{ enableMouseEvents: false }}
         />
       </div>
 
+      {/* Subtle divider */}
+      <div style={{
+        width: '80%',
+        height: '1px',
+        background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent)',
+        margin: '20px 0',
+        alignSelf: 'center',
+      }}></div>
+
       {/* Competitors List */}
-      <div className="competitor-list" style={{ width: '100%', maxWidth: '495px', padding: '0 27px' }}> {/* Reduced maxWidth by 10% from 550px, padding by 10% from 0 30px */}
-        <h3 style={{ textAlign: 'left', marginBottom: '22.5px', color: 'white' }}>Competitors</h3> {/* Reduced marginBottom by 10% from 25px */}
+      <div className="competitor-list" style={{ width: '100%', maxWidth: '495px', marginLeft: '11px' }}>
+        <h3 style={{ textAlign: 'left', marginBottom: '22.5px', color: 'white' }}>Competitors</h3>
         {competitors.map((competitor, index) => (
           <div 
             key={competitor.name} 
@@ -131,21 +138,21 @@ const BracketWithCustomSeed = () => {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              padding: '14.4px 7.2px', // Reduced by 10% from 16px 8px
-              marginBottom: '10.8px', // Reduced by 10% from 12px
-              borderBottom: index < competitors.length - 1 ? '0.675px solid white' : 'none', // Reduced by 10% from 0.75px
+              padding: '14.4px 7.2px',
+              marginBottom: '10.8px',
+              borderBottom: index < competitors.length - 1 ? '0.675px solid white' : 'none',
               cursor: 'pointer',
               transition: 'all 0.3s ease',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = '#1a1a1a';
-              e.currentTarget.style.paddingLeft = '14.4px'; // Reduced by 10% from 16px
-              e.currentTarget.style.paddingRight = '14.4px'; // Reduced by 10% from 16px
+              e.currentTarget.style.paddingLeft = '14.4px';
+              e.currentTarget.style.paddingRight = '14.4px';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = '';
-              e.currentTarget.style.paddingLeft = '7.2px'; // Reduced by 10% from 8px
-              e.currentTarget.style.paddingRight = '7.2px'; // Reduced by 10% from 8px
+              e.currentTarget.style.paddingLeft = '7.2px';
+              e.currentTarget.style.paddingRight = '7.2px';
             }}
           >
             <span style={{ color: 'white' }}>{competitor.name}</span>
