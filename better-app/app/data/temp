@@ -1,0 +1,270 @@
+'use client';
+
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import '../buttons.css';
+import '../feed.css';
+import '../globals.css';
+
+const RoundsPage: React.FunctionComponent = () => {
+  const [activeTab, setActiveTab] = useState<string>('Active');
+  const router = useRouter();  // Use router for programmatic navigation
+
+  const cardStyle = {
+    color: '#FFFFFF',
+    border: '2px solid #777',  // Increased border thickness and lightened color
+    padding: '20px',  // Increased padding
+    borderRadius: '8px',  // Increased border radius
+    transition: 'all 0.3s ease',
+    cursor: 'pointer',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',  // Slight background color
+  };
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <header style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingBottom: '20px'
+      }}>
+        <div></div>
+        <div>
+          {/* Apply Button */}
+          <Link href="/apply" style={{
+            color: 'white',
+            textDecoration: 'none',
+            marginRight: '20px',
+            padding: '12px 20px',  // Increased padding
+            backgroundColor: '#444',  // Lightened background
+            borderRadius: '8px',  // Increased border radius
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            fontWeight: 'bold',  // Made text bold
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#666';
+            e.currentTarget.style.transform = 'scale(1.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#444';
+            e.currentTarget.style.transform = 'scale(1)';
+          }}>
+            Apply
+          </Link>
+
+          {/* Sponsor Button */}
+          <Link href="/sponsor" style={{
+            color: 'white',
+            textDecoration: 'none',
+            padding: '12px 20px',  // Increased padding
+            backgroundColor: '#444',  // Lightened background
+            borderRadius: '8px',  // Increased border radius
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            fontWeight: 'bold',  // Made text bold
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#666';
+            e.currentTarget.style.transform = 'scale(1.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#444';
+            e.currentTarget.style.transform = 'scale(1)';
+          }}>
+            Sponsor
+          </Link>
+        </div>
+      </header>
+
+      {/* Feed Header Section */}
+      <section style={{
+        marginTop: '20px',
+        maxWidth: '800px',  // Increased max-width
+        margin: '0 auto',
+      }}>
+        <h2 style={{ fontWeight: '600', fontSize: '28px', color: '#FFFFFF', marginBottom: '20px', marginTop: '40px' }}>Rounds</h2>
+      </section>
+
+      {/* Tabs Section */}
+      <section style={{
+        maxWidth: '800px',  // Increased max-width
+        margin: '0 auto',
+      }}>
+        {/* Tab Navigation for Active / Archived */}
+        <nav style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          borderBottom: '2px solid #FFF'  // Increased border thickness
+        }}>
+          <a
+            href='#'
+            onClick={() => setActiveTab('Active')}
+            style={{
+              padding: '12px 20px',  // Increased padding
+              textDecoration: 'none',
+              color: activeTab === 'Active' ? '#FFFFFF' : '#AAA',
+              borderBottom: activeTab === 'Active' ? '4px solid #FFF' : 'none',  // Increased border thickness
+              fontWeight: activeTab === 'Active' ? 'bold' : 'normal',
+              transition: 'all 0.3s ease',
+              fontSize: '18px',  // Increased font size
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#FFFFFF';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = activeTab === 'Active' ? '#FFFFFF' : '#AAA';
+            }}
+          >
+            Active
+          </a>
+          <a
+            href='#'
+            onClick={() => setActiveTab('Archived')}
+            style={{
+              padding: '12px 20px',  // Increased padding
+              textDecoration: 'none',
+              color: activeTab === 'Archived' ? '#FFFFFF' : '#AAA',
+              borderBottom: activeTab === 'Archived' ? '4px solid #FFF' : 'none',  // Increased border thickness
+              fontWeight: activeTab === 'Archived' ? 'bold' : 'normal',
+              transition: 'all 0.3s ease',
+              fontSize: '18px',  // Increased font size
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#FFFFFF';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = activeTab === 'Archived' ? '#FFFFFF' : '#AAA';
+            }}
+          >
+            Archived
+          </a>
+        </nav>
+
+        {/* Active Content */}
+        {activeTab === 'Active' && (
+          <div style={{ paddingTop: '20px' }}>
+            {/* In Progress Section */}
+            <h3 style={{ fontWeight: '500', fontSize: '24px', color: '#FFFFFF', marginBottom: '15px' }}>In Progress</h3>
+            <div 
+              className="feed-card" 
+              style={cardStyle}
+              onClick={() => router.push('/roundDetails')}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = '0px 6px 15px rgba(255, 255, 255, 0.4)';
+                e.currentTarget.style.transform = 'translateY(-5px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <div className="card-content">
+                <h3 style={{ color: '#FFFFFF', fontSize: '22px', marginBottom: '10px' }}>Inaugural Tournament</h3>
+                <p style={{ color: '#FFFFFF', marginBottom: '10px', fontSize: '16px' }}>Six emerging writers compete for cash and exposure in a three-round tournament:</p>
+                <ul style={{ listStyleType: 'disc', color: '#FFFFFF', paddingLeft: '25px', marginTop: '10px', fontSize: '16px' }}>
+                  <li style={{ color: '#FFFFFF', marginBottom: '5px' }}>Best Listicle</li>
+                  <li style={{ color: '#FFFFFF', marginBottom: '5px' }}>Best Book Review</li>
+                  <li style={{ color: '#FFFFFF', marginBottom: '5px' }}>Best Short Story</li>
+                </ul>
+                <p style={{ color: '#FFFFFF', marginTop: '10px', fontSize: '16px' }}>Each round lasts one week. Two writers are eliminated in each round.</p>
+                <div className="date-container" style={{ color: '#FFFFFF', marginTop: '15px', fontSize: '16px' }}>
+                  <p style={{ margin: '0', color: '#FFFFFF' }}>Start Date: 2024-07-28</p>
+                  <p style={{ margin: '0', color: '#FFFFFF' }}>End Date: 2024-08-28</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Subtle Divider */}
+            <hr style={{ border: '0', borderTop: '2px solid rgba(255, 255, 255, 0.2)', margin: '30px 0' }} />
+
+            {/* Open to Entries Section */}
+            <h3 style={{ fontWeight: '500', fontSize: '24px', color: '#FFFFFF', marginBottom: '15px' }}>Open to Entries</h3>
+            <div 
+              className="feed-card" 
+              style={cardStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = '0px 6px 15px rgba(255, 255, 255, 0.4)';
+                e.currentTarget.style.transform = 'translateY(-5px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <div className="card-content">
+                <h3 style={{ color: '#FFFFFF', fontSize: '22px', marginBottom: '10px' }}>Explanations Tournament</h3>
+                <p style={{ color: '#FFFFFF', marginBottom: '10px', fontSize: '16px' }}>Compete in three rounds of explanatory writing:</p>
+                <ul style={{ listStyleType: 'disc', color: '#FFFFFF', paddingLeft: '25px', marginTop: '10px', fontSize: '16px' }}>
+                  <li style={{ color: '#FFFFFF', marginBottom: '5px' }}>Telescope Explanations: One sentence, one paragraph, one page</li>
+                  <li style={{ color: '#FFFFFF', marginBottom: '5px' }}>Visual Diagram Explanations</li>
+                  <li style={{ color: '#FFFFFF', marginBottom: '5px' }}>Verbal Explanations</li>
+                </ul>
+                <p style={{ color: '#FFFFFF', marginTop: '10px', fontSize: '16px' }}>Showcase your ability to explain complex concepts clearly and concisely.</p>
+                <div className="date-container" style={{ color: '#FFFFFF', marginTop: '15px', fontSize: '16px' }}>
+                  <p style={{ margin: '0', color: '#FFFFFF' }}>Start Date: 2024-09-01</p>
+                  <p style={{ margin: '0', color: '#FFFFFF' }}>End Date: 2024-10-01</p>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+                  {/* Apply Button in Card */}
+                  <Link href="/apply" style={{
+                    color: 'white',
+                    textDecoration: 'none',
+                    marginRight: '20px',
+                    padding: '12px 20px',
+                    backgroundColor: '#444',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontWeight: 'bold',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#666';
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#444';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}>
+                    Apply
+                  </Link>
+
+                  {/* Sponsor Button in Card */}
+                  <Link href="/sponsor" style={{
+                    color: 'white',
+                    textDecoration: 'none',
+                    padding: '12px 20px',
+                    backgroundColor: '#444',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontWeight: 'bold',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#666';
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#444';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}>
+                    Sponsor
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Archived Content */}
+        {activeTab === 'Archived' && (
+          <div>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+};
+
+export default RoundsPage;

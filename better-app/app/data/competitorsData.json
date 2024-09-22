@@ -1,0 +1,138 @@
+[
+  {
+    "id": 1,
+    "name": "Manali Niggums",
+    "profile": "A brief profile about Manali Niggums.",
+    "socials": {
+      "twitter": "https://twitter.com/manaliniggums",
+      "github": "https://github.com/manaliniggums"
+    },
+    "competitions": [
+      {
+        "competitionName": "Current Competition",
+        "year": 2023,
+        "status": "Active",
+        "submissions": ["Solution A", "Solution B"]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Frah Frah Got",
+    "profile": "A brief profile about Frah Frah Got.",
+    "socials": {
+      "twitter": "https://twitter.com/frahfrahgot",
+      "github": "https://github.com/frahfrahgot"
+    },
+    "competitions": [
+      {
+        "competitionName": "Current Competition",
+        "year": 2023,
+        "status": "Active",
+        "submissions": ["Solution C"]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Team C",
+    "profile": "A brief profile about Team C.",
+    "socials": {
+      "twitter": "https://twitter.com/teamC",
+      "github": "https://github.com/teamC"
+    },
+    "competitions": [
+      {
+        "competitionName": "Current Competition",
+        "year": 2023,
+        "status": "Active",
+        "submissions": ["Submission 1"]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Team D",
+    "profile": "A brief profile about Team D.",
+    "socials": {
+      "twitter": "https://twitter.com/teamD",
+      "github": "https://github.com/teamD"
+    },
+    "competitions": [
+      {
+        "competitionName": "Current Competition",
+        "year": 2023,
+        "status": "Active",
+        "submissions": ["Submission 2"]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Team E",
+    "profile": "A brief profile about Team E.",
+    "socials": {
+      "twitter": "https://twitter.com/teamE",
+      "github": "https://github.com/teamE"
+    },
+    "competitions": [
+      {
+        "competitionName": "Current Competition",
+        "year": 2023,
+        "status": "Active",
+        "submissions": ["Submission 3"]
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Team F",
+    "profile": "A brief profile about Team F.",
+    "socials": {
+      "twitter": "https://twitter.com/teamF",
+      "github": "https://github.com/teamF"
+    },
+    "competitions": [
+      {
+        "competitionName": "Current Competition",
+        "year": 2023,
+        "status": "Active",
+        "submissions": ["Submission 4"]
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Team G",
+    "profile": "A brief profile about Team G.",
+    "socials": {
+      "twitter": "https://twitter.com/teamG",
+      "github": "https://github.com/teamG"
+    },
+    "competitions": [
+      {
+        "competitionName": "Current Competition",
+        "year": 2023,
+        "status": "Active",
+        "submissions": ["Submission 5"]
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Team H",
+    "profile": "A brief profile about Team H.",
+    "socials": {
+      "twitter": "https://twitter.com/teamH",
+      "github": "https://github.com/teamH"
+    },
+    "competitions": [
+      {
+        "competitionName": "Current Competition",
+        "year": 2023,
+        "status": "Active",
+        "submissions": ["Submission 6"]
+      }
+    ]
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "round": "Round 1",
+    "teams": ["Manali Niggums", "Frah Frah Got"],
+    "startTime": "2023-09-01T10:00:00Z",
+    "endTime": "2023-09-01T11:00:00Z",
+    "prompt": "Solve the puzzle in the fastest time.",
+    "rules": "No external help allowed.",
+    "submissions": [
+      {
+        "team": "Manali Niggums",
+        "submission": "Solution A",
+        "userProfiles": ["User1", "User2"]
+      },
+      {
+        "team": "Frah Frah Got",
+        "submission": "Solution B",
+        "userProfiles": ["User3", "User4"]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "round": "Round 2",
+    "teams": ["Team C", "Team D"],
+    "startTime": "2023-09-01T12:00:00Z",
+    "endTime": "2023-09-01T13:00:00Z",
+    "prompt": "Design the best logo.",
+    "rules": "Use only vector graphics.",
+    "submissions": [
+      {
+        "team": "Team C",
+        "submission": "Logo Design C",
+        "userProfiles": ["User5", "User6"]
+      },
+      {
+        "team": "Team D",
+        "submission": "Logo Design D",
+        "userProfiles": ["User7", "User8"]
+      }
+    ]
+  }
+]

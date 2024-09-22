@@ -42,7 +42,7 @@
   /* Table and Bracket Layout */
   .bracket-table-container {
     display: flex;
-    justify-content: center; /* Align in center horizontally */
+    justify-content: center;
     align-items: flex-start;
     flex-direction: column; 
     margin-top: 20px;
@@ -50,7 +50,7 @@
   
   /* Table Styling */
   .competitor-table {
-    width: 400px; /* Narrower table */
+    width: 400px;
     border-collapse: collapse;
     margin-top: 20px;
   }
@@ -74,22 +74,37 @@
   .status-button {
     height: 18px;
     width: 18px;
-    border: 2px solid; /* Stroke only */
+    border: 2px solid;
     border-radius: 50%;
     display: inline-block;
   }
   
   .status-green {
-    border-color: #77dd77; /* Pastel green stroke */
+    border-color: #77dd77;
   }
   
   .status-red {
-    border-color: #ff6961; /* Pastel red stroke */
+    border-color: #ff6961;
   }
   
-  /* Alignment for table under columns */
   .competitor-table th,
   .competitor-table td {
-    vertical-align: middle; /* Center content vertically */
+    vertical-align: middle;
   }
   
+  .seed-item {
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .seed-item:hover {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .drawer:hover {
+    transform: translateX(0);
+  }
+  
+  .drawer:not(:hover) {
+    transform: translateX(100%);
+  }
