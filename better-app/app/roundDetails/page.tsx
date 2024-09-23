@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   Bracket,
   IRoundProps,
@@ -12,7 +12,7 @@ import {
 import matchData from '../data/matchData.json';
 import competitorsData from '../data/competitorsData.json';
 
-import '../drawer.css'; // Make sure to import the drawer styles
+import '../drawer.css'; // Ensure the drawer styles are imported
 
 const CustomSeed = ({
   seed,
@@ -68,14 +68,14 @@ const rounds: IRoundProps[] = [
   },
 ];
 
-// Update the competitors list to include all competitors
 const competitors = competitorsData.map((competitor) => ({
   id: competitor.id,
   name: competitor.name,
-  status:
-    competitor.competitions.find(
-      (comp) => comp.competitionName === 'Current Competition'
-    )?.status || 'Inactive',
+  status: competitor.competitions?.find(
+    (comp) => comp.competitionName === 'Current Competition'
+  )?.status || 'Inactive',
+  profile: competitor.profile || '',
+  socials: competitor.socials || {},
 }));
 
 const BracketWithToggle = () => {
@@ -83,19 +83,24 @@ const BracketWithToggle = () => {
   const [selectedMatchId, setSelectedMatchId] = useState<number | null>(null);
   const [selectedCompetitorId, setSelectedCompetitorId] = useState<number | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+  const [voteConfirmed, setVoteConfirmed] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
 
-  const selectedMatch = matchData.find((match) => match.id === selectedMatchId);
-  const selectedCompetitor = competitorsData.find(
-    (competitor) => competitor.id === selectedCompetitorId
+  // Memoize selected match and competitor to prevent unnecessary re-renders
+  const selectedMatch = useMemo(
+    () => matchData.find((match) => match.id === selectedMatchId),
+    [selectedMatchId]
+  );
+  const selectedCompetitor = useMemo(
+    () => competitors.find((competitor) => competitor.id === selectedCompetitorId),
+    [selectedCompetitorId]
   );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        drawerRef.current &&
-        !drawerRef.current.contains(event.target as Node)
-      ) {
+      if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
         closeDrawer();
       }
     };
@@ -105,24 +110,51 @@ const BracketWithToggle = () => {
     };
   }, []);
 
-  const openCompetitorDrawer = (competitorId: number) => {
+  // Open drawer for a competitor
+  const openCompetitorDrawer = useCallback((competitorId: number) => {
     setSelectedCompetitorId(competitorId);
     setSelectedMatchId(null); // Reset match selection
     setIsDrawerOpen(true);
-  };
+  }, []);
 
-  const openMatchDrawer = (matchId: number) => {
+  // Open drawer for a match
+  const openMatchDrawer = useCallback((matchId: number) => {
     setSelectedMatchId(matchId);
     setSelectedCompetitorId(null); // Reset competitor selection
     setIsDrawerOpen(true);
-  };
+  }, []);
 
-  const closeDrawer = () => {
+  // Close the drawer and reset states
+  const closeDrawer = useCallback(() => {
     setIsDrawerOpen(false);
+    // Use a delay to reset state after the drawer has fully closed
     setTimeout(() => {
       setSelectedMatchId(null);
       setSelectedCompetitorId(null);
-    }, 300);
+      setSelectedTeam(null); // Reset team selection on close
+      setVoteConfirmed(false); // Reset confirmation on drawer close
+    }, 300); // Ensure smooth transition
+  }, []);
+
+  // Handle voting logic
+  const handleVoteClick = useCallback(
+    (teamName: string) => {
+      if (!voteConfirmed) {
+        setSelectedTeam(teamName);
+      }
+    },
+    [voteConfirmed]
+  );
+
+  // Confirm vote
+  const confirmVote = () => {
+    if (selectedTeam) {
+      setVoteConfirmed(true); // Lock in the vote
+      setSuccessMessage(true); // Show success message
+
+      // Fade out success message after 3 seconds
+      setTimeout(() => setSuccessMessage(false), 3000);
+    }
   };
 
   return (
@@ -138,20 +170,9 @@ const BracketWithToggle = () => {
         paddingLeft: '60px',
       }}
     >
-      <div
-        style={{
-          marginTop: '20px',
-          marginBottom: '20px',
-          alignSelf: 'flex-start',
-        }}
-      >
-        <nav
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            borderBottom: '1px solid white',
-          }}
-        >
+      {/* Navigation toggle between Bracket and Competitor views */}
+      <div style={{ marginTop: '20px', marginBottom: '20px', alignSelf: 'flex-start' }}>
+        <nav style={{ display: 'flex', justifyContent: 'flex-start', borderBottom: '1px solid white' }}>
           <a
             href="#"
             onClick={() => setShowBracket(true)}
@@ -195,6 +216,7 @@ const BracketWithToggle = () => {
         </nav>
       </div>
 
+      {/* Bracket View */}
       {showBracket ? (
         <div
           style={{
@@ -253,15 +275,7 @@ const BracketWithToggle = () => {
             marginLeft: '40px',
           }}
         >
-          <h3
-            style={{
-              marginBottom: '22.5px',
-              color: 'white',
-              textAlign: 'left',
-            }}
-          >
-            Competitors
-          </h3>
+          <h3 style={{ marginBottom: '22.5px', color: 'white', textAlign: 'left' }}>Competitors</h3>
           {competitors.map((competitor, index) => (
             <div
               key={competitor.id}
@@ -271,10 +285,7 @@ const BracketWithToggle = () => {
                 alignItems: 'center',
                 padding: '14.4px 7.2px',
                 marginBottom: '10.8px',
-                borderBottom:
-                  index < competitors.length - 1
-                    ? '0.675px solid white'
-                    : 'none',
+                borderBottom: index < competitors.length - 1 ? '0.675px solid white' : 'none',
                 cursor: 'pointer',
                 transition: 'background-color 0.05s ease',
               }}
@@ -299,6 +310,7 @@ const BracketWithToggle = () => {
         </div>
       )}
 
+      {/* Drawer for Match or Competitor Details */}
       {isDrawerOpen && (
         <div
           className={`drawer ${isDrawerOpen ? 'drawer-open' : 'drawer-closing'}`}
@@ -358,48 +370,107 @@ const BracketWithToggle = () => {
                 <h2>
                   Match Between {selectedMatch.teams[0]} vs {selectedMatch.teams[1]}
                 </h2>
-                {/* Buttons for Match Page */}
+
+                {/* Vote buttons for each team */}
                 <div style={{ margin: '20px 0' }}>
                   <button
                     style={{
-                      backgroundColor: 'white',
-                      color: 'black',
-                      border: 'none',
+                      backgroundColor: selectedTeam === selectedMatch.teams[0] ? 'white' : 'black',
+                      color: selectedTeam === selectedMatch.teams[0] ? 'black' : 'white',
+                      border: '1px solid white',
                       padding: '10px 20px',
                       marginRight: '10px',
                       cursor: 'pointer',
                       fontWeight: 'bold',
-                      transition: 'background-color 0.3s',
+                      transition: 'all 0.3s',
+                      borderRadius: '3px',
+                      pointerEvents: voteConfirmed ? 'none' : 'auto', // Disable if vote confirmed
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#f0f0f0';
+                      e.currentTarget.style.backgroundColor = 'white';
+                      e.currentTarget.style.color = 'black';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'white';
+                      if (selectedTeam !== selectedMatch.teams[0]) {
+                        e.currentTarget.style.backgroundColor = 'black';
+                        e.currentTarget.style.color = 'white';
+                      }
                     }}
+                    onClick={() => handleVoteClick(selectedMatch.teams[0])}
                   >
-                    Raise the Stakes
+                    Vote for {selectedMatch.teams[0]}
                   </button>
                   <button
                     style={{
-                      backgroundColor: 'white',
-                      color: 'black',
-                      border: 'none',
+                      backgroundColor: selectedTeam === selectedMatch.teams[1] ? 'white' : 'black',
+                      color: selectedTeam === selectedMatch.teams[1] ? 'black' : 'white',
+                      border: '1px solid white',
                       padding: '10px 20px',
                       cursor: 'pointer',
                       fontWeight: 'bold',
-                      transition: 'background-color 0.3s',
+                      transition: 'all 0.3s',
+                      borderRadius: '3px',
+                      pointerEvents: voteConfirmed ? 'none' : 'auto', // Disable if vote confirmed
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#f0f0f0';
+                      e.currentTarget.style.backgroundColor = 'white';
+                      e.currentTarget.style.color = 'black';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'white';
+                      if (selectedTeam !== selectedMatch.teams[1]) {
+                        e.currentTarget.style.backgroundColor = 'black';
+                        e.currentTarget.style.color = 'white';
+                      }
                     }}
+                    onClick={() => handleVoteClick(selectedMatch.teams[1])}
                   >
-                    Vote
+                    Vote for {selectedMatch.teams[1]}
                   </button>
                 </div>
+
+                {/* Confirm Vote Button */}
+                {selectedTeam && !voteConfirmed && (
+                  <div style={{ margin: '20px 0' }}>
+                    <button
+                      style={{
+                        backgroundColor: 'black',
+                        color: 'white',
+                        border: '1px solid white',
+                        padding: '10px 20px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        transition: 'all 0.3s',
+                        borderRadius: '3px',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'white';
+                        e.currentTarget.style.color = 'black';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'black';
+                        e.currentTarget.style.color = 'white';
+                      }}
+                      onClick={confirmVote}
+                    >
+                      Confirm Vote
+                    </button>
+                  </div>
+                )}
+
+                {/* Success Message */}
+                {successMessage && (
+                  <p
+                    style={{
+                      color: 'green',
+                      fontWeight: 'bold',
+                      marginTop: '10px',
+                      transition: 'opacity 0.3s',
+                    }}
+                  >
+                    Success! Your vote for {selectedTeam} has been recorded.
+                  </p>
+                )}
+
                 {/* Match Details */}
                 <p>
                   <strong>Start Time:</strong>{' '}
@@ -416,7 +487,7 @@ const BracketWithToggle = () => {
                   <strong>Rules:</strong> {selectedMatch.rules}
                 </p>
                 <h3>Submissions:</h3>
-                {selectedMatch.submissions.map((submission, index) => (
+                {selectedMatch.submissions?.map((submission, index) => (
                   <div key={index} style={{ marginBottom: '20px' }}>
                     <h4>{submission.team}</h4>
                     <p>
@@ -430,10 +501,10 @@ const BracketWithToggle = () => {
                 ))}
               </>
             )}
+
             {selectedCompetitor && (
               <>
                 <h2>{selectedCompetitor.name}</h2>
-                {/* Button for Competitor Page */}
                 <div style={{ margin: '20px 0' }}>
                   <button
                     style={{
@@ -482,28 +553,19 @@ const BracketWithToggle = () => {
                   </a>
                 </div>
                 <h3>Competitions</h3>
-                {selectedCompetitor.competitions
-                  .sort((a, b) =>
-                    a.competitionName === 'Current Competition' ? -1 : 1
-                  )
-                  .map((competition, index) => (
-                    <div key={index} style={{ marginBottom: '20px' }}>
-                      <h4>
-                        {competition.competitionName} ({competition.year})
-                      </h4>
-                      <p>
-                        <strong>Status:</strong> {competition.status}
-                      </p>
-                      <p>
-                        <strong>Submissions:</strong>
-                      </p>
-                      <ul>
-                        {competition.submissions.map((submission, idx) => (
-                          <li key={idx}>{submission}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
+                {selectedCompetitor.competitions?.map((competition, index) => (
+                  <div key={index} style={{ marginBottom: '20px' }}>
+                    <h4>{competition.competitionName} ({competition.year})</h4>
+                    <p>
+                      <strong>Status:</strong> {competition.status}
+                    </p>
+                    <ul>
+                      {competition.submissions?.map((submission, idx) => (
+                        <li key={idx}>{submission}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </>
             )}
           </div>
