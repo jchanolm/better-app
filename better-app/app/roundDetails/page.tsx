@@ -83,6 +83,7 @@ const BracketWithToggle = () => {
   const [selectedMatchId, setSelectedMatchId] = useState<number | null>(null);
   const [selectedCompetitorId, setSelectedCompetitorId] = useState<number | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerTransitioning, setIsDrawerTransitioning] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [voteConfirmed, setVoteConfirmed] = useState(false);
   const [successMessage, setSuccessMessage] = useState(false);
@@ -111,29 +112,52 @@ const BracketWithToggle = () => {
   }, []);
 
   // Open drawer for a competitor
-  const openCompetitorDrawer = useCallback((competitorId: number) => {
-    setSelectedCompetitorId(competitorId);
-    setSelectedMatchId(null); // Reset match selection
-    setIsDrawerOpen(true);
-  }, []);
+  const openCompetitorDrawer = useCallback(
+    (competitorId: number) => {
+      if (isDrawerTransitioning) return; // Block changes while drawer is transitioning
+      setIsDrawerTransitioning(true); // Prevent further clicks until the drawer transition finishes
+
+      setSelectedCompetitorId(competitorId);
+      setSelectedMatchId(null); // Reset match selection
+
+      if (!isDrawerOpen) {
+        setIsDrawerOpen(true);
+        setTimeout(() => setIsDrawerTransitioning(false), 300); // Adjust this delay to match the transition duration
+      }
+    },
+    [isDrawerOpen, isDrawerTransitioning]
+  );
 
   // Open drawer for a match
-  const openMatchDrawer = useCallback((matchId: number) => {
-    setSelectedMatchId(matchId);
-    setSelectedCompetitorId(null); // Reset competitor selection
-    setIsDrawerOpen(true);
-  }, []);
+  const openMatchDrawer = useCallback(
+    (matchId: number) => {
+      if (isDrawerTransitioning) return; // Block changes while drawer is transitioning
+      setIsDrawerTransitioning(true); // Prevent further clicks until the drawer transition finishes
+
+      setSelectedMatchId(matchId);
+      setSelectedCompetitorId(null); // Reset competitor selection
+
+      if (!isDrawerOpen) {
+        setIsDrawerOpen(true);
+        setTimeout(() => setIsDrawerTransitioning(false), 300); // Adjust this delay to match the transition duration
+      }
+    },
+    [isDrawerOpen, isDrawerTransitioning]
+  );
 
   // Close the drawer and reset states
   const closeDrawer = useCallback(() => {
+    setIsDrawerTransitioning(true);
     setIsDrawerOpen(false);
-    // Use a delay to reset state after the drawer has fully closed
+
+    // Delay the reset of selected items until the drawer has fully closed
     setTimeout(() => {
       setSelectedMatchId(null);
       setSelectedCompetitorId(null);
       setSelectedTeam(null); // Reset team selection on close
       setVoteConfirmed(false); // Reset confirmation on drawer close
-    }, 300); // Ensure smooth transition
+      setIsDrawerTransitioning(false);
+    }, 300); // Adjust this duration if needed to match your drawer's transition duration
   }, []);
 
   // Handle voting logic
@@ -553,14 +577,14 @@ const BracketWithToggle = () => {
                   </a>
                 </div>
                 <h3>Competitions</h3>
-                {selectedCompetitor.competitions?.map((competition, index) => (
+                {selectedCompetitor.competitions?.map((competition: { competitionName: string; year: number; status: string; submissions: string[] }, index: number) => (
                   <div key={index} style={{ marginBottom: '20px' }}>
                     <h4>{competition.competitionName} ({competition.year})</h4>
                     <p>
                       <strong>Status:</strong> {competition.status}
                     </p>
                     <ul>
-                      {competition.submissions?.map((submission, idx) => (
+                      {competition.submissions?.map((submission: any, idx: number) => (
                         <li key={idx}>{submission}</li>
                       ))}
                     </ul>
