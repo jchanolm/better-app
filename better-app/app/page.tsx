@@ -1,19 +1,49 @@
-import Link from "next/link";
+'use client'
 
-export default function Home() {
+import React from 'react';
+import { useSession, signIn, signOut } from "next-auth/react"
+import Link from 'next/link';
+
+const HomePage: React.FunctionComponent = () => {
+  const { data: session } = useSession()
+
+  const buttonStyle = {
+    color: 'white',
+    backgroundColor: 'black',
+    border: '2px solid white',
+    padding: '10px 20px',
+    fontSize: '16px',
+    fontWeight: 'bold' as const,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 items-center">
-        <h1 className="text-3xl font-bold mb-8">Welcome to the Tournament App</h1>
-        <div className="flex gap-4">
-          <Link href="/rounds" className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5">
-            View Rounds
-          </Link>
-          <Link href="/roundDetails" className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5">
-            Round Details
-          </Link>
-        </div>
-      </main>
+    <div style={{ padding: '20px', color: 'white' }}>
+      <h1 style={{ fontSize: '2.5rem', marginBottom: '20px' }}>Welcome to Better</h1>
+      
+      <div style={{ marginBottom: '20px' }}>
+        {session ? (
+          <>
+            <p>Signed in as {session.user?.email}</p>
+            <button onClick={() => signOut()} style={buttonStyle}>Sign out</button>
+          </>
+        ) : (
+          <>
+            <p>Not signed in</p>
+            <button onClick={() => signIn()} style={buttonStyle}>Create Account / Sign In</button>
+          </>
+        )}
+      </div>
+
+      <div>
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>Current Competitions</h2>
+        <Link href="/rounds" style={{ color: 'white', textDecoration: 'underline' }}>
+          View Competitions
+        </Link>
+      </div>
     </div>
   );
-}
+};
+
+export default HomePage;

@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useSession, signIn, signOut } from "next-auth/react";
+import Link from 'next/link';
 import {
   Bracket,
   IRoundProps,
@@ -12,7 +14,7 @@ import {
 import matchData from '../data/matchData.json';
 import competitorsData from '../data/competitorsData.json';
 
-import '../drawer.css'; // Ensure the drawer styles are imported
+import '../drawer.css';
 
 const CustomSeed = ({
   seed,
@@ -79,6 +81,7 @@ const competitors = competitorsData.map((competitor) => ({
 }));
 
 const BracketWithToggle = () => {
+  const { data: session } = useSession();
   const [showBracket, setShowBracket] = useState(true);
   const [selectedMatchId, setSelectedMatchId] = useState<number | null>(null);
   const [selectedCompetitorId, setSelectedCompetitorId] = useState<number | null>(null);
@@ -89,7 +92,6 @@ const BracketWithToggle = () => {
   const [successMessage, setSuccessMessage] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
 
-  // Memoize selected match and competitor to prevent unnecessary re-renders
   const selectedMatch = useMemo(
     () => matchData.find((match) => match.id === selectedMatchId),
     [selectedMatchId]
@@ -111,74 +113,73 @@ const BracketWithToggle = () => {
     };
   }, []);
 
-  // Open drawer for a competitor
   const openCompetitorDrawer = useCallback(
     (competitorId: number) => {
-      if (isDrawerTransitioning) return; // Block changes while drawer is transitioning
-      setIsDrawerTransitioning(true); // Prevent further clicks until the drawer transition finishes
-
+      if (isDrawerTransitioning) return;
+      setIsDrawerTransitioning(true);
       setSelectedCompetitorId(competitorId);
-      setSelectedMatchId(null); // Reset match selection
-
+      setSelectedMatchId(null);
       if (!isDrawerOpen) {
         setIsDrawerOpen(true);
-        setTimeout(() => setIsDrawerTransitioning(false), 300); // Adjust this delay to match the transition duration
+        setTimeout(() => setIsDrawerTransitioning(false), 300);
       }
     },
     [isDrawerOpen, isDrawerTransitioning]
   );
 
-  // Open drawer for a match
   const openMatchDrawer = useCallback(
     (matchId: number) => {
-      if (isDrawerTransitioning) return; // Block changes while drawer is transitioning
-      setIsDrawerTransitioning(true); // Prevent further clicks until the drawer transition finishes
-
+      if (isDrawerTransitioning) return;
+      setIsDrawerTransitioning(true);
       setSelectedMatchId(matchId);
-      setSelectedCompetitorId(null); // Reset competitor selection
-
+      setSelectedCompetitorId(null);
       if (!isDrawerOpen) {
         setIsDrawerOpen(true);
-        setTimeout(() => setIsDrawerTransitioning(false), 300); // Adjust this delay to match the transition duration
+        setTimeout(() => setIsDrawerTransitioning(false), 300);
       }
     },
     [isDrawerOpen, isDrawerTransitioning]
   );
 
-  // Close the drawer and reset states
   const closeDrawer = useCallback(() => {
     setIsDrawerTransitioning(true);
     setIsDrawerOpen(false);
-
-    // Delay the reset of selected items until the drawer has fully closed
     setTimeout(() => {
       setSelectedMatchId(null);
       setSelectedCompetitorId(null);
-      setSelectedTeam(null); // Reset team selection on close
-      setVoteConfirmed(false); // Reset confirmation on drawer close
+      setSelectedTeam(null);
+      setVoteConfirmed(false);
       setIsDrawerTransitioning(false);
-    }, 300); // Adjust this duration if needed to match your drawer's transition duration
+    }, 300);
   }, []);
 
-  // Handle voting logic
   const handleVoteClick = useCallback(
     (teamName: string) => {
       if (!voteConfirmed) {
         setSelectedTeam(teamName);
+        setVoteConfirmed(true);
+        setSuccessMessage(true);
+        setTimeout(() => setSuccessMessage(false), 3000);
       }
     },
     [voteConfirmed]
   );
 
-  // Confirm vote
-  const confirmVote = () => {
-    if (selectedTeam) {
-      setVoteConfirmed(true); // Lock in the vote
-      setSuccessMessage(true); // Show success message
+  const undoVote = useCallback(() => {
+    setSelectedTeam(null);
+    setVoteConfirmed(false);
+  }, []);
 
-      // Fade out success message after 3 seconds
-      setTimeout(() => setSuccessMessage(false), 3000);
-    }
+  const buttonStyle = {
+    color: 'white',
+    backgroundColor: 'black',
+    border: '2px solid white',
+    padding: '10px 20px',
+    fontSize: '16px',
+    fontWeight: 'bold' as const,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    textDecoration: 'none',
   };
 
   return (
@@ -194,6 +195,27 @@ const BracketWithToggle = () => {
         paddingLeft: '60px',
       }}
     >
+      {/* Authentication buttons */}
+      <div style={{ alignSelf: 'flex-end', marginRight: '60px', marginTop: '20px' }}>
+        {session ? (
+          <>
+            <Link href="/profile" style={{
+              ...buttonStyle,
+              marginRight: '10px'
+            }}>
+              Profile
+            </Link>
+            <button onClick={() => signOut()} style={buttonStyle}>
+              Sign Out
+            </button>
+          </>
+        ) : (
+          <button onClick={() => signIn()} style={buttonStyle}>
+            Sign In
+          </button>
+        )}
+      </div>
+
       {/* Navigation toggle between Bracket and Competitor views */}
       <div style={{ marginTop: '20px', marginBottom: '20px', alignSelf: 'flex-start' }}>
         <nav style={{ display: 'flex', justifyContent: 'flex-start', borderBottom: '1px solid white' }}>
@@ -344,7 +366,7 @@ const BracketWithToggle = () => {
             top: 0,
             right: 0,
             height: '100%',
-            width: '300px',
+            width: selectedMatch ? '450px' : '300px',
             backgroundColor: 'black',
             color: 'white',
             borderLeft: '1px solid white',
@@ -391,34 +413,22 @@ const BracketWithToggle = () => {
           <div className="drawer-content" style={{ marginTop: '60px' }}>
             {selectedMatch && (
               <>
-                <h2>
-                  Match Between {selectedMatch.teams[0]} vs {selectedMatch.teams[1]}
-                </h2>
+                <h2>{selectedMatch.teams[0]} vs {selectedMatch.teams[1]}</h2>
 
                 {/* Vote buttons for each team */}
-                <div style={{ margin: '20px 0' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', margin: '20px 0' }}>
                   <button
                     style={{
                       backgroundColor: selectedTeam === selectedMatch.teams[0] ? 'white' : 'black',
                       color: selectedTeam === selectedMatch.teams[0] ? 'black' : 'white',
                       border: '1px solid white',
                       padding: '10px 20px',
-                      marginRight: '10px',
                       cursor: 'pointer',
                       fontWeight: 'bold',
                       transition: 'all 0.3s',
                       borderRadius: '3px',
-                      pointerEvents: voteConfirmed ? 'none' : 'auto', // Disable if vote confirmed
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'white';
-                      e.currentTarget.style.color = 'black';
-                    }}
-                    onMouseLeave={(e) => {
-                      if (selectedTeam !== selectedMatch.teams[0]) {
-                        e.currentTarget.style.backgroundColor = 'black';
-                        e.currentTarget.style.color = 'white';
-                      }
+                      pointerEvents: voteConfirmed ? 'none' : 'auto',
+                      width: '48%' // Set to 48% for side-by-side buttons with spacing
                     }}
                     onClick={() => handleVoteClick(selectedMatch.teams[0])}
                   >
@@ -434,17 +444,8 @@ const BracketWithToggle = () => {
                       fontWeight: 'bold',
                       transition: 'all 0.3s',
                       borderRadius: '3px',
-                      pointerEvents: voteConfirmed ? 'none' : 'auto', // Disable if vote confirmed
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'white';
-                      e.currentTarget.style.color = 'black';
-                    }}
-                    onMouseLeave={(e) => {
-                      if (selectedTeam !== selectedMatch.teams[1]) {
-                        e.currentTarget.style.backgroundColor = 'black';
-                        e.currentTarget.style.color = 'white';
-                      }
+                      pointerEvents: voteConfirmed ? 'none' : 'auto',
+                      width: '48%'
                     }}
                     onClick={() => handleVoteClick(selectedMatch.teams[1])}
                   >
@@ -452,47 +453,39 @@ const BracketWithToggle = () => {
                   </button>
                 </div>
 
-                {/* Confirm Vote Button */}
-                {selectedTeam && !voteConfirmed && (
-                  <div style={{ margin: '20px 0' }}>
-                    <button
-                      style={{
-                        backgroundColor: 'black',
-                        color: 'white',
-                        border: '1px solid white',
-                        padding: '10px 20px',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        transition: 'all 0.3s',
-                        borderRadius: '3px',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = 'white';
-                        e.currentTarget.style.color = 'black';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'black';
-                        e.currentTarget.style.color = 'white';
-                      }}
-                      onClick={confirmVote}
-                    >
-                      Confirm Vote
-                    </button>
-                  </div>
-                )}
-
                 {/* Success Message */}
                 {successMessage && (
                   <p
                     style={{
-                      color: 'green',
+                      color: '#4A90E2',
                       fontWeight: 'bold',
                       marginTop: '10px',
                       transition: 'opacity 0.3s',
+                      fontFamily: "'Open Sans', sans-serif",
                     }}
                   >
                     Success! Your vote for {selectedTeam} has been recorded.
                   </p>
+                )}
+
+                {/* Undo Vote Button */}
+                {voteConfirmed && (
+                  <button
+                    style={{
+                      backgroundColor: 'transparent',
+                      color: '#FF6347',
+                      border: '1px solid #FF6347',
+                      padding: '5px 10px',
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                      borderRadius: '3px',
+                      marginTop: '10px',
+                      fontFamily: "'Open Sans', sans-serif",
+                    }}
+                    onClick={undoVote}
+                  >
+                    Undo Vote
+                  </button>
                 )}
 
                 {/* Match Details */}
@@ -577,7 +570,7 @@ const BracketWithToggle = () => {
                   </a>
                 </div>
                 <h3>Competitions</h3>
-                {selectedCompetitor.competitions?.map((competition: { competitionName: string; year: number; status: string; submissions: string[] }, index: number) => (
+                {'competitions' in selectedCompetitor && Array.isArray(selectedCompetitor.competitions) && selectedCompetitor.competitions.map((competition: { competitionName: string; year: number; status: string; submissions: string[] }, index: number) => (
                   <div key={index} style={{ marginBottom: '20px' }}>
                     <h4>{competition.competitionName} ({competition.year})</h4>
                     <p>
