@@ -1,0 +1,18 @@
+/* app/globals.css */
+@import './buttons.css';
+
+/* Other global styles */
+/* global.css */
+
+body {
+    font-family: var(--font-open-sans), sans-serif; /* Use Open Sans globally */
+  }
+  
+
+  body {
+    background-color: #000000; /* or any color you prefer */
+  }
+  
+
+
+  

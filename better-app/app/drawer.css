@@ -1,0 +1,110 @@
+/* drawer.css */
+.drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 300px;
+    background-color: black;
+    color: white;
+    border-left: 1px solid white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000; 
+    padding: 20px;
+    overflow-y: auto; 
+  }
+  
+  .drawer-open {
+    transform: translateX(0); 
+  }
+  
+  .drawer-closing {
+    transform: translateX(100%); 
+  }
+  
+  .drawer-close-button {
+    color: white;
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+  
+  .drawer-content {
+    margin-top: 60px;
+  }
+  
+  /* Table and Bracket Layout */
+  .bracket-table-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column; 
+    margin-top: 20px;
+  }
+  
+  /* Table Styling */
+  .competitor-table {
+    width: 400px;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .competitor-table th,
+  .competitor-table td {
+    border: 1px solid white;
+    text-align: center;
+    padding: 10px;
+  }
+  
+  .competitor-table th {
+    color: white;
+    font-weight: bold;
+  }
+  
+  .competitor-table td {
+    color: white;
+  }
+  
+  .status-button {
+    height: 18px;
+    width: 18px;
+    border: 2px solid;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .status-green {
+    border-color: #77dd77;
+  }
+  
+  .status-red {
+    border-color: #ff6961;
+  }
+  
+  .competitor-table th,
+  .competitor-table td {
+    vertical-align: middle;
+  }
+  
+  .seed-item {
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .seed-item:hover {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .drawer:hover {
+    transform: translateX(0);
+  }
+  
+  .drawer:not(:hover) {
+    transform: translateX(100%);
+  }
